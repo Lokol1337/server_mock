@@ -1,48 +1,9 @@
-// console.log("УРАААААааааа!");
-
-// // подключение express
-// const express = require("express");
-// var cors = require('cors')
-// var bodyparser = require('body-parser');
-// // создаем объект приложения
-// const app = express();
-// app.use(cors())
-// app.set("view engine", "hbs");
-
-// var values = []
-
-// // определяем обработчик для маршрута "/"
-// app.get("/", function(request, response){
-     
-//     // отправляем ответ
-//     response.render("index.hbs",{
-//       title: "Values",
-//       values: values,
-//   });
-// });
-// app.use(bodyparser.json({limit: '50mb'}));
-// const urlencodedParser = express.urlencoded({extended: false});
-
-// app.post("/someEndpoint", urlencodedParser, function (request, response) {
-//   if(!request.body) return response.sendStatus(400);
-//   console.log(request.body);
-//   let date = new Date();
-//   values.unshift({id:request.body.id, name:request.body.name, date: date.getHours().toString() + ":" + date.getMinutes().toString()+ ":" + date.getSeconds().toString() + "." + date.getMilliseconds().toString(), value:request.body.currentValue});
-//   response.send(request.body);
-// });
-
-// app.get("/clean", urlencodedParser, function (request, response) {
-//   values = []
-//   console.log("Clean")
-//   response.send("ПОЛУЧИЛ GET");
-// });
-// // начинаем прослушивать подключения на 3000 порту
-// app.listen(8000); 
+const host = 'localhost'
+const port = 8000
 
 var express = require('express');
 var app = express();
 var expressWs = require('express-ws')(app);
-var array = new Map;
 
 // app.use(function (req, res, next) {
 //   req.testing = 'testing';
@@ -54,13 +15,15 @@ var array = new Map;
 //   res.end();
 // });
 
-app.ws('/', function(ws, req) {
-  ws.on('message', function(msg) {
-    map = new Map(JSON.parse(msg));
-    console.log(map);
-    ws.send(JSON.stringify(Array.from(map.entries())));
+app.ws('/', function(ws, req) { // Слушаем адрес
+  ws.on('message', function(msg) { // Обработка запроса
+    elemData = new Map(JSON.parse(msg));
+    console.log(elemData);
+    ws.send(JSON.stringify(Array.from(elemData.entries())));
   });
 
 });
 
-app.listen(8000)
+app.listen(port, host, function () {
+  console.log(`Server listens ws://${host}:${port}`);
+});
