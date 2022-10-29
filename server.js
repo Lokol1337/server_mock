@@ -56,29 +56,12 @@ app.get('/', function(req, res, next){
 
 app.ws('/', function(ws, req) {
   ws.on('message', function(msg) {
-    let getData = parseGetData(msg);
-    console.log(JSON.stringify({id: getData[1], flag: true}));
-    ws.send(JSON.stringify({id: getData[1], flag: true}));
-    // ws.send([true, getData[1]]);
+    map = new Map(JSON.parse(msg));
+    console.log(map);
+    ws.send('hello');
   });
   console.log('socket', req.testing);
 
 });
 
-app.listen(8000);
-
-
-function parseGetData(msg){
-  // парсинг получаемых данных
-  let strArrayData = msg.split(',');
-  let arrayData = [];
-  arrayData.push(parseInt(strArrayData[0]));
-  arrayData.push(parseInt(strArrayData[1]));
-  if (strArrayData.length == 3) {
-    arrayData.push(strArrayData[2]);
-  } else {
-    arrayData.push(parseInt(strArrayData[2]));
-    arrayData.push(parseInt(strArrayData[3]));
-  }
-  return arrayData;
-}
+app.listen(8000)
