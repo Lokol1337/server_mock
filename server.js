@@ -1,6 +1,5 @@
-const host = 'localhost'
-const port = 8000
-
+const host = '51.195.16.18'
+const port = 8080
 var express = require('express');
 var app = express();
 var expressWs = require('express-ws')(app);
@@ -15,11 +14,25 @@ var expressWs = require('express-ws')(app);
 //   res.end();
 // });
 
-app.ws('/', function(ws, req) { // Слушаем адрес
-  ws.on('message', function(msg) { // Обработка запроса
+app.ws('/', function(ws, req) { 
+  ws.on('message', function(msg) { 
     elemData = new Map(JSON.parse(msg));
     console.log(elemData);
-    ws.send(JSON.stringify(Array.from(elemData.entries())));
+    let sendMap;
+    if (parseInt(elemData.get('id')) + 16 < 1019) {
+      // console.log("#### " + (parseInt(parseInt(elemData.get('id'))) + 16));
+      sendMap = new Map([
+        ['id', parseInt(elemData.get('id'))],
+        ['next_id', parseInt(elemData.get('id')) + 16],
+        ['flag', true]
+      ]);
+    } else {
+      sendMap = new Map([
+        ['id', parseInt(elemData.get('id'))],
+        ['flag', false]
+      ]);
+    }
+    ws.send(JSON.stringify(Array.from(sendMap)));
   });
 
 });
